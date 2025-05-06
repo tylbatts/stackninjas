@@ -1,7 +1,0 @@
-# fastapi
-uvicorn[standard]
-sentence-transformers
-# PyMuPDF
-markdown
-requests
-qdrant-client
