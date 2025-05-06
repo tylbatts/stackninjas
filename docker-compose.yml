@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=dev-mem
+      - KC_IMPORT=/config/realm-export.json
+    volumes:
+      - ./keycloak/realm-export.json:/config/realm-export.json:ro
+    command: start-dev
+    ports:
+      - '8080:8080'
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      - VITE_KEYCLOAK_URL=http://keycloak:8080
+      - VITE_KEYCLOAK_REALM=stackninjas
+      - VITE_KEYCLOAK_CLIENT_ID=frontend
+    depends_on:
+      - keycloak
+    ports:
+      - '4173:4173'
