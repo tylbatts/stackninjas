@@ -1,27 +1,64 @@
-version: '3.9'
 
 services:
-  keycloak:
-    image: quay.io/keycloak/keycloak:21.1.1
+  db:
+    image: postgres:13
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_DB=dev-mem
-      - KC_IMPORT=/config/realm-export.json
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: stackninjas
+    ports:
+      - '5432:5432'
     volumes:
-      - ./keycloak/realm-export.json:/config/realm-export.json:ro
-    command: start-dev
+      - postgres_data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev
+      - --import-realm
+      - -Dkeycloak.cookie.secure=false
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     ports:
       - '8080:8080'
 
-  frontend:
-    build:
-      context: ./frontend
-    environment:
-      - VITE_KEYCLOAK_URL=http://keycloak:8080
-      - VITE_KEYCLOAK_REALM=stackninjas
-      - VITE_KEYCLOAK_CLIENT_ID=frontend
-    depends_on:
-      - keycloak
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+    volumes:
+      - ./backend/app:/app/app
     ports:
-      - '4173:4173'
+      - '8000:8000'
+    depends_on:
+      - db
+      - keycloak
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db/stackninjas
+      SECRET_KEY: supersecretkey
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: '30'
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: stackninjas
+      KEYCLOAK_CLIENT_ID: frontend
+
+  frontend:
+    build: ./frontend
+    command: npm run dev -- --host 0.0.0.0
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - '5173:5173'
+    environment:
+      # Backend API base path for admin routes
+      VITE_API_BASE_URL: http://localhost:8000/admin
+      # Keycloak settings for the Admin React app
+      VITE_KEYCLOAK_URL: http://localhost:8080
+      VITE_KEYCLOAK_REALM: stackninjas
+      VITE_KEYCLOAK_CLIENT_ID: frontend
+
+volumes:
+  postgres_data:

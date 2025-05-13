@@ -1,0 +1,7 @@
+fastapi
+python-multipart
+uvicorn[standard]
+SQLAlchemy
+psycopg2-binary
+python-jose[cryptography]
+requests

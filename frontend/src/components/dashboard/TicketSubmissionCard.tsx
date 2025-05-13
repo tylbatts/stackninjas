@@ -1,57 +1,53 @@
-import { useState, type FormEvent, type ChangeEvent } from 'react';
-import { useTicketContext } from '../context/TicketContext';
-import { useToast } from '../components/ui/Toast';
-import FloatingInput from '../components/FloatingInput';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, ChangeEvent, FormEvent } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '../ui/Card';
+import FloatingInput from '../FloatingInput';
+import { useTicketContext } from '../../context/TicketContext';
+import { useToast } from '../ui/Toast';
 
-export default function SubmitTicket() {
+export default function TicketSubmissionCard() {
   const { createTicket } = useTicketContext();
   const { addToast } = useToast();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
-  const [submitted, setSubmitted] = useState(false);
 
-  const isValid = title.trim() !== '' && description.trim() !== '';
+
+  const isFormValid =
+    title.trim() !== '' && description.trim() !== '';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!isValid) return;
+    if (!title.trim() || !description.trim()) return;
     try {
       await createTicket(title.trim(), description.trim());
-    } catch {
-      // error handled in createTicket
-    }
-    setSubmitted(true);
-    addToast('Ticket created successfully!');
-    // Reset form after animation
-    setTimeout(() => {
+      addToast('Ticket submitted!');
       setTitle('');
       setDescription('');
       setTags('');
-      setSubmitted(false);
-    }, 500);
+    } catch (err) {
+      console.error('Error submitting ticket', err);
+      addToast('Failed to submit ticket. Please try again.');
+    }
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+      className="w-full"
     >
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-        Submit Ticket
-      </h2>
-      <AnimatePresence>
-        {!submitted && (
-          <motion.form
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10, height: 0 }}
-            onSubmit={handleSubmit}
-            className="space-y-4 overflow-hidden"
-          >
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Submit a New Ticket</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <FloatingInput
               label="Title"
               value={title}
@@ -76,20 +72,20 @@ export default function SubmitTicket() {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setTags(e.target.value)}
             />
             <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-              Add comma-separated tags to categorize (e.g., bug, feature).
+              Add comma-separated tags to help categorize (e.g., bug, feature).
             </p>
             <div className="text-right">
               <button
                 type="submit"
-                disabled={!isValid}
+                disabled={!isFormValid}
                 className="bg-primary-600 text-white px-4 py-2 rounded-md disabled:opacity-50 active:scale-95 transition"
               >
-                Submit
+                Submit Ticket
               </button>
             </div>
-          </motion.form>
-        )}
-      </AnimatePresence>
+          </form>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

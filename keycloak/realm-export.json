@@ -35,12 +35,29 @@
         }
       ],
       "realmRoles": ["admin"]
+    },
+    {
+      "username": "support_engineer",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Support",
+      "lastName": "Engineer",
+      "email": "support_engineer@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["engineer"]
     }
   ],
   "roles": {
     "realm": [
       { "name": "user" },
-      { "name": "admin" }
+      { "name": "admin" },
+      { "name": "engineer" }
     ]
   },
   "clients": [
@@ -48,7 +65,11 @@
       "clientId": "frontend",
       "enabled": true,
       "protocol": "openid-connect",
-      "redirectUris": ["http://localhost:4173/*"],
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://localhost:5173/admin",
+        "http://localhost:5173/admin/*"
+      ],
       "publicClient": true,
       "webOrigins": ["*"]
     }

@@ -1,0 +1,10 @@
+fastapi
+python-multipart
+uvicorn[standard]
+SQLAlchemy>=1.4
+asyncpg
+requests
+alembic
+passlib[bcrypt]
+python-jose[cryptography]
+python-dotenv

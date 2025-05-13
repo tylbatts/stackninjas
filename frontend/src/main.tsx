@@ -1,23 +1,18 @@
-// src/main.tsx
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { ReactKeycloakProvider } from '@react-keycloak/web';
-import App from './App';               // assuming you default-export App
+import App from './App';
 import './style/globals.css';
-import keycloak from './keycloak';     // your Keycloak instance
+import { ToastProvider } from './components/ui/Toast';
 
-// grab the container
+// Grab the root container
 const container = document.getElementById('root');
-if (!container) {
-  throw new Error('Root element not found');
-}
-
-// create a root and render
+if (!container) throw new Error('Root element not found');
 const root = createRoot(container);
+
 root.render(
   <React.StrictMode>
-    <ReactKeycloakProvider authClient={keycloak}>
+    <ToastProvider>
       <App />
-    </ReactKeycloakProvider>
+    </ToastProvider>
   </React.StrictMode>
 );

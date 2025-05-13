@@ -1,3 +1,20 @@
+---
+## Admin Dashboard Setup
+
+The Admin Dashboard for support engineers is available under `/admin`.
+
+1. Create a `.env` file in `frontend/` with:
+   ```
+   VITE_API_BASE_URL=http://localhost:8000/admin
+   ```
+2. Start services:
+   ```bash
+   docker compose up --build
+   ```
+3. Visit `http://localhost:5173/admin/login` and login with:
+   - Username: `support_engineer`
+   - Password: `password`
+4. Manage tickets at `/admin/tickets`.
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
