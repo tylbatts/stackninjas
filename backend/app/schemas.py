@@ -61,3 +61,21 @@ class TicketUpdateStatus(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    
+class PastSuggestion(BaseModel):
+    ticket_id: int
+    snippet: str
+    solved_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class DocSuggestion(BaseModel):
+    doc_id: str
+    filename: str
+    snippet: str
+    full_text: str
+    section_heading: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class VectorSuggestionsResponse(BaseModel):
+    past: List[PastSuggestion]
+    docs: List[DocSuggestion]

@@ -43,6 +43,9 @@ services:
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_REALM: stackninjas
       KEYCLOAK_CLIENT_ID: frontend
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: '6333'
+      EMBEDDING_MODEL_NAME: distilbert-base-uncased
 
   frontend:
     build: ./frontend
@@ -59,6 +62,13 @@ services:
       VITE_KEYCLOAK_URL: http://localhost:8080
       VITE_KEYCLOAK_REALM: stackninjas
       VITE_KEYCLOAK_CLIENT_ID: frontend
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - '6333:6333'
+    volumes:
+      - qdrant_storage:/qdrant/storage
 
 volumes:
   postgres_data:
+  qdrant_storage:

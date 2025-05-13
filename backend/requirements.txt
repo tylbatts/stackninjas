@@ -8,3 +8,7 @@ alembic
 passlib[bcrypt]
 python-jose[cryptography]
 python-dotenv
+qdrant-client
+transformers
+torch
+PyPDF2

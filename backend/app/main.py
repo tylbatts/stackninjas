@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 
@@ -9,7 +9,37 @@ from .database import init_db, get_db, async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 import requests
 import time
+from datetime import datetime, timedelta
 from jose import jwk
+ 
+# Vector embedding and Qdrant setup
+import io
+import re
+import uuid
+from qdrant_client import QdrantClient
+from qdrant_client.http import models as qdrant_models
+import torch
+from transformers import AutoTokenizer, AutoModel
+from PyPDF2 import PdfReader
+
+# Load embedding model
+EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "distilbert-base-uncased")
+tokenizer = AutoTokenizer.from_pretrained(EMBEDDING_MODEL_NAME)
+model = AutoModel.from_pretrained(EMBEDDING_MODEL_NAME)
+EMBED_DIM = model.config.hidden_size
+
+# Initialize Qdrant client
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", "6333"))
+qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
+
+def embed_text(text: str) -> List[float]:
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    embeddings = outputs.last_hidden_state.mean(dim=1)[0]
+    normalized = embeddings / embeddings.norm(p=2)
+    return normalized.tolist()
 
 # Environment settings
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
@@ -131,6 +161,90 @@ async def on_startup():
                 time.sleep(1)
         else:
             raise RuntimeError("Failed to fetch JWKS from Keycloak")
+        # Initialize Qdrant collections for tickets and docs if they do not exist
+        existing_collections = {c.name for c in qdrant.get_collections().collections}
+        if "tickets" not in existing_collections:
+            qdrant.create_collection(
+                collection_name="tickets",
+                vectors_config=qdrant_models.VectorParams(size=EMBED_DIM, distance=qdrant_models.Distance.COSINE),
+            )
+        if "docs" not in existing_collections:
+            qdrant.create_collection(
+                collection_name="docs",
+                vectors_config=qdrant_models.VectorParams(size=EMBED_DIM, distance=qdrant_models.Distance.COSINE),
+            )
+        # Seed sample docs into Qdrant if empty
+        docs_count = qdrant.count(collection_name="docs").count
+        if docs_count == 0:
+            sample_docs = [
+                {"filename": "README.md", "section_heading": "Introduction", "text": "Welcome to the docs…"},
+                {"filename": "Troubleshooting.pdf", "section_heading": "Errors", "text": "Error code 500 means…"},
+            ]
+            points = []
+            for doc in sample_docs:
+                doc_id = uuid.uuid4().hex
+                vec = embed_text(doc["text"])
+                payload = {
+                    "doc_id": doc_id,
+                    "filename": doc["filename"],
+                    "section_heading": doc["section_heading"],
+                    "text_chunk": doc["text"],
+                }
+                point = qdrant_models.PointStruct(id=doc_id, vector=vec, payload=payload)
+                points.append(point)
+            qdrant.upsert(collection_name="docs", points=points)
+        # Seed resolved tickets into DB and Qdrant if none exist
+        resolved = await crud.list_tickets(session, status=models.TicketStatus.resolved)
+        if not resolved:
+            sample_resolved = [
+                {"title": "Cannot login to account",
+                 "description": "Users receive a 500 error when attempting to login via SSO. Please investigate authentication flow.",
+                 "solved_at": datetime.utcnow() - timedelta(days=1)},
+                {"title": "Payment processing timeout",
+                 "description": "Payment requests are timing out due to network latency in our payment gateway integration.",
+                 "solved_at": datetime.utcnow() - timedelta(days=2)},
+                {"title": "Email notifications not sent",
+                 "description": "Transactional emails (e.g., password reset) are not being sent. SMTP server logs indicate connection refused.",
+                 "solved_at": datetime.utcnow() - timedelta(days=3)},
+                {"title": "Slow dashboard load",
+                 "description": "Dashboard metrics take over 30 seconds to load for large data sets. Need performance tuning.",
+                 "solved_at": datetime.utcnow() - timedelta(days=4)},
+                {"title": "API rate limit exceeded",
+                 "description": "Clients are receiving 429 Too Many Requests errors despite low request volume. Throttling configuration review needed.",
+                 "solved_at": datetime.utcnow() - timedelta(days=5)},
+            ]
+            new_resolved = []
+            for rd in sample_resolved:
+                t_res = models.Ticket(
+                    user_id=cust.id,
+                    engineer_id=engineer.id,
+                    title=rd["title"],
+                    description=rd["description"],
+                    status=models.TicketStatus.resolved,
+                    created_at=rd["solved_at"],
+                )
+                session.add(t_res)
+                new_resolved.append(t_res)
+            await session.commit()
+            for t_res in new_resolved:
+                await session.refresh(t_res)
+                # Embed and upsert to Qdrant tickets collection
+                vec = embed_text(f"{t_res.title}. {t_res.description}")
+                payload = {
+                    "ticket_id": t_res.id,
+                    "description": t_res.description,
+                    "status": t_res.status.value,
+                    "solved_at": t_res.created_at.isoformat(),
+                }
+                point = qdrant_models.PointStruct(id=str(t_res.id), vector=vec, payload=payload)
+                qdrant.upsert(collection_name="tickets", points=[point])
+                # Seed a suggestion record for this resolved ticket
+                snippet = t_res.description if len(t_res.description) <= 200 else t_res.description[:200] + "..."
+                sug_in = schemas.SuggestionCreate(
+                    error_snippet=snippet,
+                    suggestion_text="Refer to resolution steps documented in internal knowledge base."
+                )
+                await crud.create_suggestion(session, t_res.id, sug_in)
 # Keycloak and JWT setup
 
 # Keycloak and JWT setup
@@ -276,3 +390,106 @@ async def search_suggestions(
     engineer: models.User = Depends(get_current_engineer),
 ):
     return await crud.search_suggestions(db, query)
+
+@app.get("/admin/tickets/{ticket_id}/suggestions", response_model=schemas.VectorSuggestionsResponse)
+async def get_suggestions(
+    ticket_id: int,
+    db: AsyncSession = Depends(get_db),
+    user: models.User = Depends(get_current_engineer),
+):
+    ticket = await crud.get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
+    text = f"{ticket.title}. {ticket.description}"
+    vector = embed_text(text)
+    # Search past tickets (only resolved)
+    ticket_filter = qdrant_models.Filter(
+        must=[
+            qdrant_models.FieldCondition(
+                key="status",
+                match=qdrant_models.MatchValue(value=models.TicketStatus.resolved.value),
+            )
+        ]
+    )
+    past_hits = qdrant.search(
+        collection_name="tickets",
+        query_vector=vector,
+        limit=5,
+        query_filter=ticket_filter,
+        with_payload=True,
+    )
+    past = []
+    for hit in past_hits:
+        payload = hit.payload or {}
+        tid = payload.get("ticket_id")
+        snippet = payload.get("description", "")
+        if len(snippet) > 200:
+            snippet = snippet[:200] + "..."
+        solved_at = payload.get("solved_at")
+        past.append(schemas.PastSuggestion(ticket_id=tid, snippet=snippet, solved_at=solved_at))
+    # Search documentation chunks
+    # Search documentation chunks
+    docs_hits = qdrant.search(
+        collection_name="docs",
+        query_vector=vector,
+        limit=5,
+        with_payload=True,
+    )
+    docs = []
+    for hit in docs_hits:
+        payload = hit.payload or {}
+        doc_id = payload.get("doc_id")
+        filename = payload.get("filename")
+        text_chunk = payload.get("text_chunk", "")
+        snippet = text_chunk if len(text_chunk) <= 200 else text_chunk[:200] + "..."
+        section = payload.get("section_heading")
+        docs.append(schemas.DocSuggestion(
+            doc_id=doc_id,
+            filename=filename,
+            snippet=snippet,
+            full_text=text_chunk,
+            section_heading=section,
+        ))
+    return schemas.VectorSuggestionsResponse(past=past, docs=docs)
+
+@app.post("/admin/docs/upload", status_code=status.HTTP_201_CREATED)
+async def upload_docs(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    engineer: models.User = Depends(get_current_engineer),
+):
+    content = await file.read()
+    ext = file.filename.lower().split('.')[-1]
+    doc_id = uuid.uuid4().hex
+    chunks = []
+    if ext in ("md", "markdown"):
+        text = content.decode('utf-8')
+        # Split markdown by headings
+        parts = re.split(r"(?m)^# (.+)$", text)
+        if parts and parts[0].strip():
+            chunks.append({'section_heading': None, 'text': parts[0].strip()})
+        for i in range(1, len(parts), 2):
+            heading = parts[i].strip()
+            body = parts[i+1].strip() if i+1 < len(parts) else ''
+            chunks.append({'section_heading': heading, 'text': body})
+    elif ext == 'pdf':
+        reader = PdfReader(io.BytesIO(content))
+        for idx, page in enumerate(reader.pages, start=1):
+            text = page.extract_text() or ''
+            chunks.append({'section_heading': f"Page {idx}", 'text': text})
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported file type")
+    # Embed and upsert chunks
+    points = []
+    for chunk in chunks:
+        vector = embed_text(chunk['text'])
+        payload = {
+            'doc_id': doc_id,
+            'filename': file.filename,
+            'section_heading': chunk.get('section_heading'),
+            'text_chunk': chunk['text'],
+        }
+        point = qdrant_models.PointStruct(id=uuid.uuid4().hex, vector=vector, payload=payload)
+        points.append(point)
+    qdrant.upsert(collection_name="docs", points=points)
+    return {'detail': f"Uploaded {len(points)} chunks from {file.filename}"}
