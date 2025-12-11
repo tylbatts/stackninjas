@@ -1,287 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StackNinjas | SRE & Reliability Governance</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stackninjas | Reliability, Platform, and Governance Consultancy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="nav" id="top">
     <div class="container nav__inner">
-      <a href="#top" class="logo" aria-label="StackNinjas home">StackNinjas</a>
-      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
+      <a class="logo" href="#home" aria-label="Stackninjas home">Stackninjas</a>
+      <button class="nav__toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
+        <span></span><span></span><span></span>
       </button>
-      <nav class="nav__links" id="nav-menu" aria-label="Primary">
+      <nav class="nav__links" id="primary-nav" aria-label="Primary">
+        <a href="#home">Home</a>
         <a href="#services">Services</a>
-        <a href="#governance">Governance Model</a>
-        <a href="#how-we-work">How We Work</a>
+        <a href="#approach">Approach</a>
+        <a href="#clients">Clients</a>
         <a href="#about">About</a>
-        <a href="#contact" class="cta-link">Contact</a>
+        <a href="#contact">Contact</a>
+        <a class="btn btn--sm primary" href="#contact">Talk to us</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero" aria-labelledby="hero-heading">
-      <div class="container hero__content">
+    <section id="home" class="hero section" aria-labelledby="hero-heading">
+      <div class="container hero__grid">
         <div class="hero__text">
-          <p class="eyebrow">SRE-as-a-Service & Reliability Governance</p>
-          <h1 id="hero-heading">SRE & Reliability Governance for High-Stakes Systems.</h1>
-          <p class="subhead">StackNinjas helps CTOs and engineering leaders design, run, and govern SRE programs for systems where downtime is not an option.</p>
-          <p class="supporting">From SLIs and SLOs to incident response and executive reporting, we bring structure and accountability to reliability.</p>
+          <p class="eyebrow">Reliability. Governance. Platform maturity.</p>
+          <h1 id="hero-heading">Reliability, governance, and engineering maturity without the drama.</h1>
+          <p class="subhead">Stackninjas is a senior engineering and governance partner delivering cohesive SRE, platform engineering, and compliance-aware operations for teams that need production to be predictably boring.</p>
+          <ul class="hero__bullets">
+            <li>Hardened production and observability that executives can trust.</li>
+            <li>Predictable releases backed by SLIs, SLOs, and disciplined runbooks.</li>
+            <li>Audit-ready practices aligned to your operating model.</li>
+          </ul>
           <div class="hero__actions">
-            <a class="btn primary" href="#contact">Talk to an expert</a>
-            <a class="btn ghost" href="#how-we-work">See how we work</a>
-          </div>
-          <div class="trust-strip" role="list">
-            <div role="listitem">Built for regulated and high-risk domains</div>
-            <div role="listitem">Aligned with your existing engineering culture</div>
-            <div role="listitem">Clear, measurable reliability outcomes</div>
+            <a class="btn primary" href="#contact">Schedule a conversation</a>
+            <a class="text-link" href="#contact">Download capabilities overview</a>
           </div>
         </div>
         <div class="hero__visual" aria-hidden="true">
-          <div class="orbital">
-            <span class="node"></span>
-            <span class="node"></span>
-            <span class="node"></span>
-            <div class="core"></div>
+          <div class="visual-card">
+            <div class="metric">
+              <span class="metric__label">MTTR focus</span>
+              <span class="metric__value">-38%</span>
+            </div>
+            <div class="metric">
+              <span class="metric__label">Change fail rate</span>
+              <span class="metric__value">&lt;3%</span>
+            </div>
+            <div class="metric">
+              <span class="metric__label">SLO coverage</span>
+              <span class="metric__value">90%+</span>
+            </div>
+            <p class="visual-note">Outcome-driven engagements with accountable milestones.</p>
           </div>
-          <div class="grid-lines"></div>
         </div>
-      </div>
-    </section>
-
-    <section class="intro" aria-labelledby="intro-heading">
-      <div class="container narrow">
-        <h2 id="intro-heading">Built for pragmatic engineering leaders.</h2>
-        <p class="lead">We partner with organizations that already take reliability seriously and need a clear, durable SRE model—not another slide deck. Our work is tailored for leaders who want honest assessments, realistic trade-offs, and execution that survives the next reorg.</p>
-        <ul class="pill-list">
-          <li>CTOs and VPs of Engineering responsible for uptime and risk.</li>
-          <li>Heads of Platform/SRE building or evolving SRE teams.</li>
-          <li>Product and domain leaders running mission-critical services.</li>
-        </ul>
       </div>
     </section>
 
     <section id="services" class="section" aria-labelledby="services-heading">
       <div class="container">
         <div class="section__header">
-          <h2 id="services-heading">What StackNinjas Delivers.</h2>
-          <p class="section__intro">A focused set of services around SRE, reliability governance, and production operations.</p>
+          <h2 id="services-heading">Core services for high-growth teams</h2>
+          <p class="section__intro">Practical, senior-led engagements that blend SRE, platform enablement, and governance so production stays stable while teams move fast.</p>
         </div>
         <div class="card-grid">
           <article class="card">
-            <h3>SRE Program Design &amp; Governance</h3>
+            <h3>SRE-as-a-Service &amp; Reliability Engineering</h3>
+            <p>Embed seasoned reliability engineers to design and operate the practices your teams can sustain.</p>
             <ul>
-              <li>Define the SRE operating model (roles, responsibilities, interfaces).</li>
-              <li>Establish decision rights and escalation paths.</li>
-              <li>Align SRE with product, platform, and security stakeholders.</li>
+              <li>End-to-end reliability assessments and roadmaps.</li>
+              <li>SLIs, SLOs, and error budget policies anchored to user journeys.</li>
+              <li>Instrumentation, observability, and defensive architecture tuning.</li>
             </ul>
           </article>
           <article class="card">
-            <h3>SLIs, SLOs &amp; Error Budgets</h3>
+            <h3>Platform Engineering &amp; DevOps Enablement</h3>
+            <p>Build a platform foundation that reduces cognitive load and accelerates delivery without sacrificing control.</p>
             <ul>
-              <li>Model reliability around user journeys and critical flows.</li>
-              <li>Design SLIs and SLOs that engineering teams actually use.</li>
-              <li>Implement error budget policies that balance risk and delivery.</li>
+              <li>Golden paths, paved roads, and self-service workflows.</li>
+              <li>CI/CD modernization with policy-as-code and guardrails.</li>
+              <li>Shared services that balance autonomy with consistency.</li>
             </ul>
           </article>
           <article class="card">
-            <h3>Incident Management &amp; On-Call Operations</h3>
+            <h3>Cloud Architecture &amp; Migration</h3>
+            <p>Design cloud architectures that are cost-aware, resilient, and ready for regulated stakeholders.</p>
             <ul>
-              <li>Design on-call rotations and load that engineers can sustain.</li>
-              <li>Standardize incident triage, communication, and roles.</li>
-              <li>Improve post-incident reviews, follow-through, and learning.</li>
+              <li>Landing zones, networking, and identity foundations.</li>
+              <li>Migration playbooks with rollback and validation plans.</li>
+              <li>Capacity planning, resiliency testing, and chaos drills.</li>
             </ul>
           </article>
           <article class="card">
-            <h3>Reliability Coaching &amp; Embedded SRE</h3>
+            <h3>Security, Compliance &amp; Governance</h3>
+            <p>Operationalize controls without slowing engineering by aligning governance to real-world workflows.</p>
             <ul>
-              <li>Partner with teams to embed SRE thinking in daily work.</li>
-              <li>Support migrations, re-architecture, and reliability-focused projects.</li>
-              <li>Provide advisory support to engineering and executive leadership.</li>
+              <li>Risk-based control mapping to platform and product surfaces.</li>
+              <li>Audit-ready runbooks, evidence pipelines, and change policies.</li>
+              <li>Collaboration between security, product, and platform leads.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Operational Maturity &amp; Incident Excellence</h3>
+            <p>Stand up disciplined operations with clarity on ownership, escalation, and learning.</p>
+            <ul>
+              <li>On-call design that engineers can sustain.</li>
+              <li>Incident command, communication, and executive visibility.</li>
+              <li>Post-incident reviews that drive durable improvements.</li>
             </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="governance" class="section section--alt" aria-labelledby="governance-heading">
+    <section id="approach" class="section section--alt" aria-labelledby="approach-heading">
       <div class="container">
         <div class="section__header">
-          <h2 id="governance-heading">Reliability Governance, Not Just Tooling.</h2>
-          <p class="section__intro">Tools matter, but they don’t fix governance. StackNinjas focuses on how decisions are made: which risks are accepted, which are mitigated, and how reliability work competes with new features.</p>
-        </div>
-        <div class="three-col">
-          <article class="card soft">
-            <h3>Technical Governance</h3>
-            <ul>
-              <li>SLO reviews and error budget policies.</li>
-              <li>Change management that fits modern delivery.</li>
-              <li>Architecture and reliability guardrails.</li>
-            </ul>
-          </article>
-          <article class="card soft">
-            <h3>Operational Governance</h3>
-            <ul>
-              <li>On-call expectations and rotation health.</li>
-              <li>Standard operating procedures and runbooks.</li>
-              <li>Incident command, communication, and reporting.</li>
-            </ul>
-          </article>
-          <article class="card soft">
-            <h3>Executive Governance</h3>
-            <ul>
-              <li>Reliability scorecards and concise reporting.</li>
-              <li>Risk trade-offs framed in business language.</li>
-              <li>Clear ownership for reliability outcomes.</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="how-we-work" class="section" aria-labelledby="how-heading">
-      <div class="container">
-        <div class="section__header">
-          <h2 id="how-heading">How an Engagement with StackNinjas Works.</h2>
-          <p class="section__intro">Structured, time-bounded engagements that respect your teams and deliver durable reliability practices.</p>
+          <h2 id="approach-heading">How we work with your teams</h2>
+          <p class="section__intro">We integrate with in-house leaders, provide clarity on decision-making, and stay accountable to the outcomes you care about.</p>
         </div>
         <div class="steps">
           <article class="step">
-            <h3>1. Assess</h3>
-            <p>We start with a targeted assessment of your current SRE practices, production stack, incident history, and reliability goals.</p>
+            <div class="step__number" aria-hidden="true">01</div>
+            <h3>Assessment &amp; discovery</h3>
+            <p>Targeted interviews, architecture reviews, and production diagnostics mapped to your goals.</p>
           </article>
           <article class="step">
-            <h3>2. Design</h3>
-            <p>We co-design an SRE and governance model that fits your org structure, risk profile, and delivery cadence.</p>
+            <div class="step__number" aria-hidden="true">02</div>
+            <h3>Architecture &amp; operating model</h3>
+            <p>Design clear ownership, decision rights, and technical guardrails that align teams and leadership.</p>
           </article>
           <article class="step">
-            <h3>3. Implement</h3>
-            <p>We help roll out processes, playbooks, metrics, and governance forums with your teams, not to them.</p>
+            <div class="step__number" aria-hidden="true">03</div>
+            <h3>Implementation &amp; enablement</h3>
+            <p>Hands-on delivery with your engineers: automation, runbooks, playbooks, and platform improvements.</p>
           </article>
           <article class="step">
-            <h3>4. Operate &amp; Improve</h3>
-            <p>We support ongoing reviews, coaching, and adjustments so the SRE model stays useful as the organization evolves.</p>
+            <div class="step__number" aria-hidden="true">04</div>
+            <h3>Ongoing partnership</h3>
+            <p>Regular reviews, reliability scorecards, and continuous improvement that survive reorgs and roadmap shifts.</p>
           </article>
         </div>
-        <p class="note">Engagements can be structured as short, focused projects or ongoing advisory partnerships.</p>
       </div>
     </section>
 
-    <section id="why" class="section section--alt" aria-labelledby="why-heading">
+    <section id="clients" class="section" aria-labelledby="clients-heading">
       <div class="container">
         <div class="section__header">
-          <h2 id="why-heading">Why teams choose StackNinjas.</h2>
+          <h2 id="clients-heading">Who relies on Stackninjas</h2>
+          <p class="section__intro">We work with leaders who demand measurable reliability and governance without adding noise.</p>
         </div>
-        <div class="three-col features">
-          <article class="feature">
-            <h3>SRE expertise, not generic consulting.</h3>
-            <p>We focus on SRE, reliability, and production operations. You get practitioners who have lived the on-call reality and scaled reliability programs.</p>
-          </article>
-          <article class="feature">
-            <h3>Governance that survives reorgs.</h3>
-            <p>We design governance that is simple enough to operate, explicit about ownership, and resilient to org changes.</p>
-          </article>
-          <article class="feature">
-            <h3>Straightforward, no-fluff communication.</h3>
-            <p>You get clear language, honest assessments, and practical recommendations grounded in your constraints.</p>
-          </article>
+        <div class="profiles">
+          <div class="profile">Series B–D SaaS with strict uptime commitments</div>
+          <div class="profile">Enterprise platform team consolidating services</div>
+          <div class="profile">Fintech-scale data workloads needing control</div>
+          <div class="profile">Product-led teams formalizing SRE practices</div>
+        </div>
+        <div class="testimonials">
+          <blockquote>
+            <p>“They translated executive risk concerns into concrete SLOs and workflows our engineers actually use.”</p>
+            <cite>Head of Platform, B2B SaaS</cite>
+          </blockquote>
+          <blockquote>
+            <p>“Practical, senior guidance. They sat in the war room, built the runbooks, and helped us ship safely.”</p>
+            <cite>CTO, Infrastructure-heavy startup</cite>
+          </blockquote>
+          <blockquote>
+            <p>“Governance without bureaucracy. Our audits finally align with how the platform really operates.”</p>
+            <cite>VP Engineering, Enterprise product team</cite>
+          </blockquote>
+        </div>
+        <div class="metrics">
+          <h3>What your CTO cares about</h3>
+          <ul class="metrics__list">
+            <li>Mean time to recovery</li>
+            <li>Error budget burn and release cadence</li>
+            <li>Change fail rate and rollback readiness</li>
+            <li>Audit readiness with evidence on demand</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <section id="about" class="section" aria-labelledby="about-heading">
-      <div class="container narrow">
-        <h2 id="about-heading">About StackNinjas.</h2>
-        <p>StackNinjas LLC is a boutique reliability partner focused on SRE and production governance. We help teams running complex, high-risk systems introduce clarity, structure, and accountability around reliability.</p>
-        <p>Whether you are formalizing your first SRE team, rethinking an existing model, or aligning reliability work with business priorities, we act as a neutral, experienced partner.</p>
-        <div class="mini">
-          <h3>Where we fit</h3>
-          <p>We integrate with your existing engineering, platform, and security teams and work alongside your current tools and vendors.</p>
+    <section id="about" class="section section--alt" aria-labelledby="about-heading">
+      <div class="container about">
+        <div class="about__text">
+          <h2 id="about-heading">Boutique, senior-led, and hands-on</h2>
+          <p>Stackninjas, LLC is an independent engineering consultancy led by practitioners who have owned uptime, incident response, and board-level risk conversations. We partner with your teams directly—no outsourced slideware, no shell games.</p>
+          <p>We speak the language of engineers and executives, making reliability, governance, and platform decisions transparent and defensible.</p>
+        </div>
+        <div class="about__principles">
+          <h3>Principles we operate by</h3>
+          <ul>
+            <li>No surprises—clear expectations and communication.</li>
+            <li>Bias for simplification and operational clarity.</li>
+            <li>Operate as part of your team, not above it.</li>
+            <li>Measure what matters and iterate with evidence.</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="section section--contact" aria-labelledby="contact-heading">
-      <div class="container contact-grid">
-        <div>
-          <div class="section__header">
-            <h2 id="contact-heading">Let’s talk about your reliability challenges.</h2>
-            <p class="section__intro">If you are responsible for uptime, risk, or critical systems, we’re happy to compare notes and see whether we can help.</p>
-          </div>
-          <form id="contact-form" novalidate>
-            <div class="form-row">
-              <label for="name">Full Name<span aria-hidden="true">*</span></label>
-              <input type="text" id="name" name="name" placeholder="Your name" required>
-              <span class="error" id="error-name" aria-live="polite"></span>
-            </div>
-            <div class="form-row">
-              <label for="email">Work Email<span aria-hidden="true">*</span></label>
-              <input type="email" id="email" name="email" placeholder="you@company.com" required>
-              <span class="error" id="error-email" aria-live="polite"></span>
-            </div>
-            <div class="form-row">
-              <label for="company">Company<span aria-hidden="true">*</span></label>
-              <input type="text" id="company" name="company" placeholder="Company name" required>
-              <span class="error" id="error-company" aria-live="polite"></span>
-            </div>
-            <div class="form-row">
-              <label for="role">Role<span aria-hidden="true">*</span></label>
-              <input type="text" id="role" name="role" placeholder="Head of Platform" required>
-              <span class="error" id="error-role" aria-live="polite"></span>
-            </div>
-            <div class="form-row">
-              <label for="team-size">Team Size</label>
-              <select id="team-size" name="team-size">
-                <option value="<10">&lt;10</option>
-                <option value="10-50">10–50</option>
-                <option value="51-200">51–200</option>
-                <option value="201-1000">201–1000</option>
-                <option value="1000+">1000+</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <label for="message">Message<span aria-hidden="true">*</span></label>
-              <textarea id="message" name="message" rows="4" placeholder="What reliability challenges are you solving?" required></textarea>
-              <span class="error" id="error-message" aria-live="polite"></span>
-            </div>
-            <button type="submit" class="btn primary">Send message</button>
-            <p class="small">We typically respond within 1–2 business days.</p>
-            <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
-          </form>
+    <section id="contact" class="section contact" aria-labelledby="contact-heading">
+      <div class="container contact__grid">
+        <div class="contact__intro">
+          <h2 id="contact-heading">If you’re evaluating partners for a significant engagement, we’d like to talk.</h2>
+          <p class="section__intro">Tell us a bit about your goals. We typically respond within one business day.</p>
         </div>
-        <aside class="contact-aside">
-          <div class="contact-card">
-            <h3>Prefer email?</h3>
-            <p>Reach us at: <a href="mailto:contact@stackninjas.com">contact@stackninjas.com</a></p>
-            <p class="small">We don’t share your details with third parties.</p>
+        <form id="contact-form" novalidate class="contact__form">
+          <div class="form-row">
+            <label for="fullName">Full Name<span aria-hidden="true">*</span></label>
+            <input type="text" id="fullName" name="fullName" placeholder="Your name" required />
+            <span class="error" id="error-fullName" aria-live="polite"></span>
           </div>
-          <div class="contact-card muted">
-            <h4>What to expect</h4>
-            <p>Clear communication, pragmatic options, and a focus on reliability outcomes that leadership can track.</p>
+          <div class="form-row">
+            <label for="company">Company<span aria-hidden="true">*</span></label>
+            <input type="text" id="company" name="company" placeholder="Company name" required />
+            <span class="error" id="error-company" aria-live="polite"></span>
           </div>
-        </aside>
+          <div class="form-row">
+            <label for="role">Role / Title<span aria-hidden="true">*</span></label>
+            <input type="text" id="role" name="role" placeholder="CTO, VP Engineering, Head of Platform" required />
+            <span class="error" id="error-role" aria-live="polite"></span>
+          </div>
+          <div class="form-row">
+            <label for="email">Work Email<span aria-hidden="true">*</span></label>
+            <input type="email" id="email" name="email" placeholder="you@company.com" required />
+            <span class="error" id="error-email" aria-live="polite"></span>
+          </div>
+          <div class="form-row">
+            <label for="teamSize">Approximate Team Size</label>
+            <select id="teamSize" name="teamSize">
+              <option value="">Select team size</option>
+              <option value="1-10">1-10</option>
+              <option value="11-50">11-50</option>
+              <option value="51-200">51-200</option>
+              <option value="201-1000">201-1000</option>
+              <option value="1000+">1000+</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="interest">Area of interest</label>
+            <select id="interest" name="interest">
+              <option value="SRE/Reliability">SRE / Reliability</option>
+              <option value="Platform Engineering">Platform Engineering</option>
+              <option value="Governance &amp; Compliance">Governance &amp; Compliance</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="message">Message<span aria-hidden="true">*</span></label>
+            <textarea id="message" name="message" rows="4" placeholder="What reliability or platform challenges are you solving?" required></textarea>
+            <span class="error" id="error-message" aria-live="polite"></span>
+          </div>
+          <button type="submit" class="btn primary">Send message</button>
+          <p class="small">We typically respond within one business day.</p>
+          <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+        </form>
+        <div class="contact__aside">
+          <div class="contact__card">
+            <h3>Prefer direct contact?</h3>
+            <p>Email us at <a href="mailto:contact@stackninjas.io">contact@stackninjas.io</a></p>
+            <a class="btn secondary" href="#">Request an executive briefing</a>
+          </div>
+          <div class="contact__card muted">
+            <h4>What you can expect</h4>
+            <ul>
+              <li>Clear next steps and accountable owners.</li>
+              <li>Respect for your teams’ time and constraints.</li>
+              <li>Partners who show up for incidents and postmortems.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="container footer__inner">
-      <p>© <span id="year"></span> StackNinjas LLC. All rights reserved.</p>
+      <p>© <span id="year"></span> Stackninjas, LLC. All rights reserved.</p>
       <div class="footer__links">
-        <a href="#services">Services</a>
-        <a href="#how-we-work">How We Work</a>
-        <a href="#contact">Contact</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
       </div>
-      <p class="small">SRE, governance, and production reliability consulting.</p>
+      <p class="small">Stackninjas is an independent engineering consultancy.</p>
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
